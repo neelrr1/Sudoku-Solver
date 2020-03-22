@@ -1,3 +1,7 @@
+import pygame as pg
+import pygame.freetype as freetype
+from pygame import *
+
 # Empty Board
 # board = [
 #     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -37,7 +41,9 @@ board = [
 #     [0, 0, 0, 0, 0, 5, 7, 0, 6]
 # ]
 
-nums = {1,2,3,4,5,6,7,8,9}
+nums = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+# Game logic
 
 def getRow(index):
     return board[index]
@@ -149,8 +155,63 @@ def solveHelper(i, j, numsIndex):
         if (board[i][j] == 0): board[i][j] = nums[numsIndex]
         return True # Solved sudoku board
 
+# UI
+def drawBoxes(screen, size, color):
+    box = Rect(0, 0, size, size)
+
+    for i in range(3):
+        for j in range(3):
+            box.left = j * box.width
+            box.top = i * box.height
+            pg.draw.rect(screen, color, box, 2)
+
+def drawCells(screen, size, color):
+    cell = Rect(0, 0, size, size)
+
+    for i in range(9):
+        for j in range(9):
+            cell.left = j * cell.width
+            cell.top = i * cell.height
+            pg.draw.rect(screen, color, cell, 2)
+
+            # Draw values
+            font = freetype.SysFont('arial', size)
+            value = ""
+            if board[i][j] != 0: value = str(board[i][j]) 
+            font.render_to(screen, (j * cell.width + (size / 4), i * cell.height + (size / 8)), value, color)
+            
+
 if __name__ == "__main__":
-    print(board)
-    solve()
-    print(board)
-    print(isValidBoard())
+    # Initialization
+    pg.init()
+    gameWidth = 900
+    gameHeight = 900
+    screen = pg.display.set_mode((gameWidth,gameHeight))
+    # TODO: Set title of window
+    screen.fill(Color('white'))
+
+    # Constants
+    line_width = 5
+    cell = Rect(0, 0, 100, 100)
+
+    # Draw elements
+    drawCells(screen, gameWidth // 9, Color('black'))
+    drawBoxes(screen, gameWidth // 3, Color('red'))
+
+    pg.display.update()
+
+    running = True
+    while running:
+        for i in pg.event.get():
+            if i.type == pg.QUIT:
+                running = False
+                pg.quit()
+
+        if not running: break
+        pg.display.update()
+
+    # Text based solving
+    # print(board)
+    # solve()
+    # print(board)
+    # print(isValidBoard())
