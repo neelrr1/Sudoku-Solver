@@ -141,7 +141,9 @@ def solveHelper(i, j, numsIndex, ui=False):
 
     if (hasNextSquare(i, j)):
         if (board[i][j] == 0):
-            if (numsIndex >= len(nums)): return False # Cannot proceed, must backtrack
+            if (numsIndex >= len(nums)): 
+                clearCell(i, j)
+                return False # Cannot proceed, must backtrack
             board[i][j] = nums[numsIndex]
 
             if ui:
@@ -150,14 +152,18 @@ def solveHelper(i, j, numsIndex, ui=False):
             (nextI, nextJ) = nextSquare(i, j)
             if (not solveHelper(nextI, nextJ, 0, ui)):
                 board[i][j] = 0
+                clearCell(i, j)
                 return solveHelper(i, j, numsIndex + 1, ui)
             else:
                 return True # Solution was found?
         else:
+            # Square value was given
             (nextI, nextJ) = nextSquare(i, j)
             return solveHelper(nextI, nextJ, 0, ui)
     else:
-        if (board[i][j] == 0): board[i][j] = nums[numsIndex]
+        if (board[i][j] == 0): 
+            board[i][j] = nums[numsIndex]
+            drawCell(i, j)
         return True # Solved sudoku board
 
 # UI
@@ -206,7 +212,7 @@ def drawCell(i, j):
     font.render_to(screen, (j * size + (size // 4), i * size + (size // 8)), value, fontColor)
 
     pg.display.update()
-    # pg.time.Clock().tick(60)
+    pg.time.Clock().tick(5)
 
 def clearCell(i, j):
     size = cellSize
